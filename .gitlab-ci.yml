@@ -6,7 +6,8 @@ mirror-master:
   variables:
     COMMIT_USER_EMAIL: "vkhashkovsky@gmail.com"
     COMMIT_USER_NAME: "Valery Khashkovsky - BXalll"
-    EXCLUDE_FILES: ".gitlab-ci.yml push-all.sh"
+    COMMIT_MESSAGE: "Auto mirroring master from dev-sandbox"
+    EXCLUDE_FILES: ".gitlab-ci.yml push-all.sh config.ini local.md"
     UPSTREAM_REPOSITORY: "git@github.com:vkhashkovsky/ydisk-masspublish.git"
     UPSTREAM_BRANCH: "master"
     GIT_SUBMODULE_STRATEGY: none
@@ -24,7 +25,7 @@ mirror-master:
     - git config  user.email "${COMMIT_USER_EMAIL}"
     - git config  user.name "${COMMIT_USER_NAME}"
     - git add .
-    - git commit -m "auto-exclude files"
+    - git commit -m "${COMMIT_MESSAGE}"
     - git remote add mirror $UPSTREAM_REPOSITORY                       # 6
     - git remote show mirror                                           # 7
     - git fetch mirror                                                 # 8
