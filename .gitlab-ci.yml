@@ -1,0 +1,31 @@
+stages:
+  - mirror
+
+mirror-master:
+  stage: mirror
+  variables:
+    COMMIT_USER_EMAIL: "vkhashkovsky@gmail.com"
+    COMMIT_USER_NAME: "Valery Khashkovsky - BXalll"
+    EXCLUDE_FILES: ".gitlab-ci.yml push-all.sh"
+    UPSTREAM_REPOSITORY: "git@github.com:vkhashkovsky/ydisk-masspublish.git"
+    UPSTREAM_BRANCH: "master"
+    GIT_SUBMODULE_STRATEGY: none
+    GIT_STRATEGY: clone
+  cache: {}
+  only:
+    - master
+  script:
+    - mkdir -p ~/.ssh                                                  # 1
+    - echo $GITHUB_MIRROR_PRIVATE | base64 -di > ~/.ssh/id_rsa          # 2
+    - echo $GITHUB_MIRROR_PUBLIC > ~/.ssh/id_rsa.pub                   # 3
+    - ssh-keyscan -t rsa,dsa,ecdsa github.com >> ~/.ssh/known_hosts    # 4
+    - chmod -R go-rwx ~/.ssh                                           # 5
+    - for i in ${EXCLUDE_FILES}; do rm ${i}; done
+    - git config  user.email "${COMMIT_USER_EMAIL}"
+    - git config  user.name "${COMMIT_USER_NAME}"
+    - git add .
+    - git commit -m "auto-exclude files"
+    - git remote add mirror $UPSTREAM_REPOSITORY                       # 6
+    - git remote show mirror                                           # 7
+    - git fetch mirror                                                 # 8
+    - git push --progress mirror HEAD:master                           # 9
